@@ -521,8 +521,31 @@ void setup() {
     
   }
 }
+
+
+const int redPin = 6;
+const int greenPin = 7;
+const int bluePin = 8; 
 //------------------------------------------------------------------------------
 void loop() {
-  cout << F("working...") << endl;
+  //cout << F("working...") << endl;
+  //delay(1000);
+
+  analogWrite(redPin, 128);
+  analogWrite(greenPin, 0);
+  analogWrite(bluePin, 0);
+  delay(1000);
+  analogWrite(redPin, 0);
+  analogWrite(greenPin, 128);
+  analogWrite(bluePin, 0);
+  delay(1000);
+  analogWrite(redPin, 0);
+  analogWrite(greenPin, 0);
+  analogWrite(bluePin, 128);
+  delay(1000);
+
+  analogWrite(redPin, 128);
+  analogWrite(greenPin, 128);
+  analogWrite(bluePin, 0);
   delay(1000);
 }
