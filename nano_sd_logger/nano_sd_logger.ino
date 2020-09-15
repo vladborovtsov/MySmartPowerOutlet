@@ -12,6 +12,10 @@
  * and SDFormatter uses FAT12.
  */
 
+const int redPin = 6;
+const int greenPin = 7;
+const int bluePin = 8; 
+
 // Set USE_SDIO to zero for SPI card access. 
 #define USE_SDIO 0
 //
@@ -477,6 +481,13 @@ bool _checkCard() {
   return true;
 }
 
+
+void setupLED(int r, int g, int b) {
+  analogWrite(redPin, r);
+  analogWrite(greenPin, g);
+  analogWrite(bluePin, b);
+}
+
 bool _formatCard() {
   #if USE_SDIO
   if (!card.begin()) {
@@ -515,37 +526,27 @@ bool _formatCard() {
 void setup() {
   char c;
   Serial.begin(9600);
+
+  setupLED(128,0,0); 
  
   if (!_checkCard()) {
+    setupLED(128,128,0);
     _formatCard();
-    
+
+    if (!_checkCard()) {
+      setupLED(128,0,128);
+      while (1) {}; 
+    }
   }
 }
 
 
-const int redPin = 6;
-const int greenPin = 7;
-const int bluePin = 8; 
+
 //------------------------------------------------------------------------------
 void loop() {
   //cout << F("working...") << endl;
   //delay(1000);
 
-  analogWrite(redPin, 128);
-  analogWrite(greenPin, 0);
-  analogWrite(bluePin, 0);
-  delay(1000);
-  analogWrite(redPin, 0);
-  analogWrite(greenPin, 128);
-  analogWrite(bluePin, 0);
-  delay(1000);
-  analogWrite(redPin, 0);
-  analogWrite(greenPin, 0);
-  analogWrite(bluePin, 128);
-  delay(1000);
-
-  analogWrite(redPin, 128);
-  analogWrite(greenPin, 128);
-  analogWrite(bluePin, 0);
-  delay(1000);
+  setupLED(0,128,0); 
+  
 }
