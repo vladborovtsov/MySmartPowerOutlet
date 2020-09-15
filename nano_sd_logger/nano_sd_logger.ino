@@ -458,11 +458,27 @@ void formatCard() {
   cout << F("Format done\n");
 }
 //------------------------------------------------------------------------------
-void setup() {
-  char c;
-  Serial.begin(9600);
- 
-#if USE_SDIO
+
+bool _checkCard() {
+  SdFat sd; 
+  SdFile root;
+
+  if (!sd.begin(chipSelect, SD_SCK_MHZ(50))) {
+    sd.initErrorHalt();
+    return false; 
+  }
+
+   if (!root.open("/")) {
+    cout << F("open root failed") << endl; 
+    return false; 
+  }
+
+  cout << F("SD is OK!") << endl; 
+  return true;
+}
+
+bool _formatCard() {
+  #if USE_SDIO
   if (!card.begin()) {
     sdError("card.begin failed");  
   }
@@ -485,8 +501,28 @@ void setup() {
   cout << F(" MB, (MB = 1,000,000 bytes)") << endl;
 
   
-  eraseCard();
-  formatCard();
+
+ 
+    cout << F("going to format sd card...") << endl;
+
+    eraseCard();
+    formatCard();
+
+    cout << F("format completed.");   
+}
+
+
+void setup() {
+  char c;
+  Serial.begin(9600);
+ 
+  if (!_checkCard()) {
+    _formatCard();
+    
+  }
 }
 //------------------------------------------------------------------------------
-void loop() {}
+void loop() {
+  cout << F("working...") << endl;
+  delay(1000);
+}
