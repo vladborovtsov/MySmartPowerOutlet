@@ -461,64 +461,7 @@ void formatCard() {
 void setup() {
   char c;
   Serial.begin(9600);
-  // Wait for USB Serial 
-  while (!Serial) {
-    SysCall::yield();
-  }
-  cout << F("Type any character to start\n");
-  while (!Serial.available()) {
-    SysCall::yield();
-  }
-  // Discard any extra characters.
-  do {
-    delay(10);
-  } while (Serial.available() && Serial.read() >= 0);
-  cout << F(
-         "\n"
-         "This program can erase and/or format SD/SDHC cards.\n"
-         "\n"
-         "Erase uses the card's fast flash erase command.\n"
-         "Flash erase sets all data to 0X00 for most cards\n"
-         "and 0XFF for a few vendor's cards.\n"
-         "\n"
-         "Cards larger than 2 GB will be formatted FAT32 and\n"
-         "smaller cards will be formatted FAT16.\n"
-         "\n"
-         "Warning, all data on the card will be erased.\n"
-         "Enter 'Y' to continue: ");
-  while (!Serial.available()) {
-    SysCall::yield();
-  }
-
-  c = Serial.read();
-  cout << c << endl;
-  if (c != 'Y') {
-    cout << F("Quiting, you did not enter 'Y'.\n");
-    return;
-  }
-  // Read any existing Serial data.
-  do {
-    delay(10);
-  } while (Serial.available() && Serial.read() >= 0);
-
-  cout << F(
-         "\n"
-         "Options are:\n"
-         "E - erase the card and skip formatting.\n"
-         "F - erase and then format the card. (recommended)\n"
-         "Q - quick format the card without erase.\n"
-         "\n"
-         "Enter option: ");
-
-  while (!Serial.available()) {
-    SysCall::yield();
-  }
-  c = Serial.read();
-  cout << c << endl;
-  if (!strchr("EFQ", c)) {
-    cout << F("Quiting, invalid option entered.") << endl;
-    return;
-  }
+ 
 #if USE_SDIO
   if (!card.begin()) {
     sdError("card.begin failed");  
@@ -541,12 +484,9 @@ void setup() {
   cout << F("Card Size: ") << setprecision(0) << 1.048576*cardCapacityMB;
   cout << F(" MB, (MB = 1,000,000 bytes)") << endl;
 
-  if (c == 'E' || c == 'F') {
-    eraseCard();
-  }
-  if (c == 'F' || c == 'Q') {
-    formatCard();
-  }
+  
+  eraseCard();
+  formatCard();
 }
 //------------------------------------------------------------------------------
 void loop() {}
